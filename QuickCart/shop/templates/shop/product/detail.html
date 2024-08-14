@@ -4,7 +4,7 @@
     {{ product.name }}
 {% endblock %}
 {% block content %}
-<div class="product-detail">
+<div class="product-detail">a
     <img src="{% if product.image %}
                 {{ product.image.url }}
             {% else %}
@@ -18,6 +18,11 @@
         </a>
         </h2>
         <p class="price">${{ product.price }}</p>
+        <form action="{% url 'cart:cart_add' product.id %}" method="POST">
+            {{ cart_product_form }}
+            {% csrf_token %}
+            <input type="submit" value="Add to cart">
+           </form>
         {{ product.description|linebreaks }}
 </div>
 {% endblock %}
