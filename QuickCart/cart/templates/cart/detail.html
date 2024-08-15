@@ -16,6 +16,7 @@ Your shopping cart
             <th>Remove</th>
             <th>Unit price</th>
             <th>Price</th>
+            <th>Total Price</th>
         </tr>
     </thead>
     <tbody>
@@ -54,7 +55,7 @@ Your shopping cart
         {% endfor %}
         <tr class="total">
             <td>Total</td>
-            <td colspan="4"></td>
+            <td colspan="5"></td>
             <td class="num">${{ cart.get_total_price }}</td>
         </tr>
     </tbody>
