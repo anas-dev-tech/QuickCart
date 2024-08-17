@@ -4,6 +4,7 @@ from django.utils.safestring import mark_safe
 import csv 
 import datetime
 from django.http import HttpResponse
+from django.urls import reverse
 
 def export_to_csv(modeladmin, request, queryset):
     opts = modeladmin.model._meta
@@ -28,7 +29,11 @@ def export_to_csv(modeladmin, request, queryset):
     return response
 export_to_csv.short_description = 'Export to CSV'
 
+def order_pdf(obj):
+    url = reverse('orders:admin_order_pdf', args=[obj.id])
+    return mark_safe(f'<a href="{url}">PDF</a>')
 
+order_pdf.short_description = 'Invoice'
 
 def order_payment(obj):
     url = obj.get_stripe_url()
@@ -39,6 +44,11 @@ def order_payment(obj):
 order_payment.short_description = 'Stripe payment'
 
 
+
+def order_detail(obj):
+    url = reverse('orders:admin_order_detail', args=[obj.id])
+    return mark_safe(f'<a href="{url}">View</a>')
+
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
     raw_id_fields = ['product']
@@ -48,8 +58,10 @@ class OrderItemInline(admin.TabularInline):
 class OrderAdmin(admin.ModelAdmin):
     list_display = ('first_name', 'last_name', 'email',
                     'address', 'postal_code', 'city',
-                    'created', 'updated', 'paid', order_payment )
+                    'created', 'updated', 'paid', order_payment,
+                    order_pdf , order_detail )
     list_filter = ('paid', 'created', 'updated')
     inlines = [OrderItemInline]
     actions = [export_to_csv]
+
 
