@@ -4,9 +4,9 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from orders.models import Order
 from .tasks import payment_completed
-
-
-
+from shop.recommender import Recommender
+from icecream import ic
+from shop.models import Product
 
 @csrf_exempt
 def stripe_webhook(request):
@@ -36,6 +36,16 @@ def stripe_webhook(request):
             
             # mark order as paid
             order.paid = True
+            
+            ordered_product_ids = order.items.values_list('product', flat=True)
+            if len(ordered_product_ids) > 1:
+                ordered_products = Product.objects.filter(id__in=ordered_product_ids)
+                ic(ordered_products)
+                r = Recommender()
+                r.products_bought(ordered_products)
+            
+            
+            
             order.stripe_id = session.payment_intent
             order.save()
             

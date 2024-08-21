@@ -4,6 +4,9 @@ from django.views.generic import ListView, DetailView
 from .models import Product, Category
 from django.shortcuts import get_object_or_404
 from cart.forms import CartAddProductForm
+from .recommender import Recommender
+from icecream import ic
+
 
 
 class ProductListMixin(object):
@@ -35,7 +38,6 @@ class ProductDetailView(DetailView):
     model = Product
     template_name = 'shop/product/detail.html'
     context_object_name = 'product'
-    
     def get_object(self, queryset=None):
         return get_object_or_404(Product, id=self.kwargs['id'], slug=self.kwargs['slug'], available=True)
 
@@ -43,4 +45,10 @@ class ProductDetailView(DetailView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context =  super().get_context_data(**kwargs)
         context['cart_product_form'] = CartAddProductForm()
+        
+        r = Recommender()
+        ic(self.object)
+        ic(r.suggest_products_for([self.object], 1))
+        context['recommended_products'] = r.suggest_products_for([self.object], 1)
+
         return context
