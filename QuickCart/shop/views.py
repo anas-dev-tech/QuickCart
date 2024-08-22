@@ -47,8 +47,6 @@ class ProductDetailView(DetailView):
         context['cart_product_form'] = CartAddProductForm()
         
         r = Recommender()
-        ic(self.object)
-        ic(r.suggest_products_for([self.object], 1))
-        context['recommended_products'] = r.suggest_products_for([self.object], 1)
+        context['recommended_products'] = r.suggest_products_for([self.object], 3)
 
         return context

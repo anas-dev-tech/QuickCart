@@ -4,6 +4,11 @@ from .forms import CartAddProductForm
 from .cart import Cart
 from shop.models import Product
 from coupons.forms import CouponApplyForm
+from shop.recommender import Recommender
+from icecream import ic
+
+
+
 @require_POST
 def cart_add(request, product_id):
     cart = Cart(request)
@@ -36,10 +41,16 @@ def cart_detail(request):
                         'override': True
                         })
     coupon_apply_form = CouponApplyForm()
+    r = Recommender()
+    products_in_cart = [item['product'] for item in cart]
+    ic(products_in_cart)
+    recommended_products = r.suggest_products_for(products_in_cart, 2)
+    ic(recommended_products)
     return render(
         request,
         'cart/detail.html',
         {
             'cart':cart,
-            'coupon_apply_form': coupon_apply_form
+            'coupon_apply_form': coupon_apply_form,
+            'recommended_products': recommended_products,
                 })

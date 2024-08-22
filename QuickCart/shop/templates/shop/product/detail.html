@@ -9,13 +9,11 @@
             <a href="{{ product.category.get_absolute_url }}">{{ product.category }}</a>
         </h2>
         <p class="price">${{ product.price }}</p>
-        <form action="{% url 'cart:cart_add' product.id %}"  method="post">
-            {{ cart_product_form }}
-            {% csrf_token %}
-            <input type="submit" value="Add to cart">
+        <form action="{% url 'cart:cart_add' product.id %}" method="post">
+            {{ cart_product_form }} {% csrf_token %}
+            <input type="submit" value="Add to cart" />
         </form>
         {{ product.description|linebreaks }}
-
         {% if recommended_products %}
             <div class="recommendations">
                 <h3>People who bought this also bought</h3>
@@ -31,7 +29,7 @@
                 {% endfor %}
             </div>
         {% else %}
-        Helolo
+            Helolo
         {% endif %}
     </div>
 {% endblock content %}
